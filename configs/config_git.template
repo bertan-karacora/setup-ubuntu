@@ -1,10 +1,10 @@
 [user]
 	name = Bertan Karacora
 	email = bertan.karacora@gmail.com
+[init]
+	defaultBranch = main
 [pull]
 	rebase = true
 [core]
 	autocrlf = input
 	editor = code --wait
-[init]
-	defaultBranch = main

@@ -2,14 +2,13 @@
 
 set -e -u -o pipefail
 
-readonly path_repo="$(dirname "$(realpath "$BASH_SOURCE")")"
-source "$path_repo/libs/io_utils.sh"
+readonly path_repo="$(dirname $(dirname $(realpath $BASH_SOURCE)))"
 
 show_help() {
     echo "Usage:"
-    echo "  ./setup.sh [-h|--help]"
+    echo "  ./setup_packages.sh [-h|--help]"
     echo
-    echo "Setup the system."
+    echo "Setup system packages."
     echo
 }
 
@@ -31,17 +30,19 @@ parse_args() {
     done
 }
 
+setup_packages() {
+    echo "Installing packages..."
+
+    sudo apt-get update --quiet
+    cat "$path_repo/requirements_apt.txt" |
+        xargs sudo apt-get install --quiet --assume-yes --no-install-recommends
+
+    echo "Installing packages finished"
+}
+
 main() {
     parse_args "$@"
-    ./scripts/setup_libs.sh
-    ./scripts/setup_aliases.sh
-    ./scripts/setup_scripts.sh
-    ./scripts/setup_packages.sh
-    sudo scripts/disable_sudo_password.sh "$USER"
-    ./scripts/disable_apt_marketing_message.sh
-    ./scripts/setup_git.sh
-    ./scripts/setup_ssh.sh
-    ./scripts/setup_docker.sh
+    setup_packages
 }
 
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then

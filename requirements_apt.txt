@@ -6,6 +6,7 @@ imagemagick
 gdb
 ghostscript
 git
+gnupg
 gzip
 python-is-python3
 python3

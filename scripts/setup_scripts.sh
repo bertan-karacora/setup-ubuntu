@@ -2,14 +2,14 @@
 
 set -e -u -o pipefail
 
-readonly path_repo="$(dirname "$(realpath "$BASH_SOURCE")")"
+readonly path_repo="$(dirname $(dirname $(realpath $BASH_SOURCE)))"
 source "$path_repo/libs/io_utils.sh"
 
 show_help() {
     echo "Usage:"
-    echo "  ./setup.sh [-h|--help]"
+    echo "  ./setup_scripts.sh [-h|--help]"
     echo
-    echo "Setup the system."
+    echo "Setup bash scripts."
     echo
 }
 
@@ -31,17 +31,20 @@ parse_args() {
     done
 }
 
+setup_scripts() {
+    echo "Setting up scripts..."
+
+    local string_bashrc="
+export PATH=\$PATH:$path_repo/scripts"
+
+    append_if_not_contained "$HOME/.bashrc" "$string_bashrc"
+
+    echo "Setting up scripts finished"
+}
+
 main() {
     parse_args "$@"
-    ./scripts/setup_libs.sh
-    ./scripts/setup_aliases.sh
-    ./scripts/setup_scripts.sh
-    ./scripts/setup_packages.sh
-    sudo scripts/disable_sudo_password.sh "$USER"
-    ./scripts/disable_apt_marketing_message.sh
-    ./scripts/setup_git.sh
-    ./scripts/setup_ssh.sh
-    ./scripts/setup_docker.sh
+    setup_scripts
 }
 
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then

@@ -7,9 +7,9 @@ source "$path_repo/libs/io_utils.sh"
 
 show_help() {
     echo "Usage:"
-    echo "  ./disable_apt_marketing_message.sh [-h|--help]"
+    echo "  ./setup_aliases.sh [-h|--help]"
     echo
-    echo "Disable apt marketing message."
+    echo "Setup bash aliases."
     echo
 }
 
@@ -31,17 +31,24 @@ parse_args() {
     done
 }
 
-disable_apt_marketing_message() {
-    echo "Disabling apt marketing message..."
+setup_aliases() {
+    echo "Setting up bash aliases..."
 
-    sudo sed -i'' -e 's/^\(\s\+\)\([^#]\)/\1# \2/' /etc/apt/apt.conf.d/20apt-esm-hook.conf
+    local string_bash_aliases="$(PATH_REPO=$path_repo envsubst '$PATH_REPO' < $path_repo/resources/bash_aliases.sh.template)"
+    local string_bashrc="
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi"
 
-    echo "Disabling apt marketing message finished"
+    append_if_not_contained "$HOME/.bash_aliases" "$string_bash_aliases"
+    append_if_not_contained "$HOME/.bashrc" "$string_bashrc"
+
+    echo "Setting up bash aliases finished"
 }
 
 main() {
     parse_args "$@"
-    disable_apt_marketing_message
+    setup_aliases
 }
 
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then

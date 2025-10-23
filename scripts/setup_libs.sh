@@ -7,9 +7,9 @@ source "$path_repo/libs/io_utils.sh"
 
 show_help() {
     echo "Usage:"
-    echo "  ./disable_apt_marketing_message.sh [-h|--help]"
+    echo "  ./setup_libs.sh [-h|--help]"
     echo
-    echo "Disable apt marketing message."
+    echo "Setup bash libs."
     echo
 }
 
@@ -31,17 +31,24 @@ parse_args() {
     done
 }
 
-disable_apt_marketing_message() {
-    echo "Disabling apt marketing message..."
+setup_libs() {
+    echo "Setting up bash functions..."
 
-    sudo sed -i'' -e 's/^\(\s\+\)\([^#]\)/\1# \2/' /etc/apt/apt.conf.d/20apt-esm-hook.conf
+    local string_bash_libs="$(PATH_REPO=$path_repo envsubst '$PATH_REPO' < $path_repo/resources/bash_libs.sh.template)"
+    local string_bashrc="
+if [ -f ~/.bash_libs ]; then
+    . ~/.bash_libs
+fi"
 
-    echo "Disabling apt marketing message finished"
+    append_if_not_contained "$HOME/.bash_libs" "$string_bash_libs"
+    append_if_not_contained "$HOME/.bashrc" "$string_bashrc"
+
+    echo "Setting up bash functions finished"
 }
 
 main() {
     parse_args "$@"
-    disable_apt_marketing_message
+    setup_libs
 }
 
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
