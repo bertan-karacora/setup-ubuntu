@@ -1,6 +1,6 @@
 set -a
 
-append2file() {
+append_to_file() {
     local path="$1"
     local string="$2"
 
@@ -22,7 +22,7 @@ append_if_not_contained() {
     local string="$2"
 
     if ! contains "$path" "$string"; then
-        append2file "$path" "$string"
+        append_to_file "$path" "$string"
     else
         return 0
     fi
@@ -31,7 +31,7 @@ append_if_not_contained() {
 ask_yesno() {
     while true; do
         read -p "Do you wish to use the recommended settings? " yesno
-        case $yesno in
+        case "$yesno" in
         [Yy]*)
             return 0
             ;;
