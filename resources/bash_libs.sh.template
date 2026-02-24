@@ -1,5 +1,5 @@
 if [ -d "$path_repo/libs" ]; then
-    for lib in "$path_repo/libs/*"; do
+    for lib in "$path_repo/libs/"*; do
         if [ -f "$lib" ]; then
             source "$lib"
         fi
